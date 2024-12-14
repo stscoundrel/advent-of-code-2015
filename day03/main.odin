@@ -68,10 +68,55 @@ solve_part_1 :: proc(directions: [dynamic]Direction) -> int {
     return len(visited)
 }
 
+solve_part_2 :: proc(directions: [dynamic]Direction) -> int {
+    santa_x := 0
+    santa_y := 0
+    robo_x := 0
+    robo_y := 0
+    visited: map[Coordinate]int
+    visited[Coordinate{santa_x, santa_y}] = 1
+
+    for direction, index in directions {
+
+        if(index % 2 == 0 || index == 0) {
+            switch direction {
+                case Direction.Up:
+                    santa_y -= 1
+                    visited[Coordinate{santa_x, santa_y}] += 1
+                case Direction.Down: 
+                    santa_y += 1
+                    visited[Coordinate{santa_x, santa_y}] += 1
+                case Direction.Right: 
+                    santa_x += 1
+                    visited[Coordinate{santa_x, santa_y}] += 1
+                case Direction.Left:
+                    santa_x -= 1
+                    visited[Coordinate{santa_x, santa_y}] += 1
+            }
+        } else {
+            switch direction {
+                case Direction.Up:
+                    robo_y -= 1
+                    visited[Coordinate{robo_x, robo_y}] += 1
+                case Direction.Down: 
+                    robo_y += 1
+                    visited[Coordinate{robo_x, robo_y}] += 1
+                case Direction.Right: 
+                    robo_x += 1
+                    visited[Coordinate{robo_x, robo_y}] += 1
+                case Direction.Left:
+                    robo_x -= 1
+                    visited[Coordinate{robo_x, robo_y}] += 1
+            }
+        }
+    }
+
+
+    return len(visited)
+}
+
 main :: proc() {     
-    testInput :: `>
-^>v<
-^v^v^v^v^v`
+    testInput :: `^v^v^v^v^v`
 
     raw_input, ok := os.read_entire_file("input.txt");
     input := string(raw_input)
@@ -79,4 +124,5 @@ main :: proc() {
     directions := parse_input(input)   
 
     fmt.println(solve_part_1(directions))
+    fmt.println(solve_part_2(directions))
 }
