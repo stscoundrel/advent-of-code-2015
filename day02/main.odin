@@ -43,6 +43,20 @@ solve_part_1 :: proc(dimensions: [dynamic]Dimensions) -> int {
     return total
 }
 
+solve_part_2 :: proc(dimensions: [dynamic]Dimensions) -> int {
+    total := 0
+
+    for gift in dimensions {
+        s := []int{gift.length, gift.width, gift.height}
+        slice.sort(s)
+
+        total += (s[0]*2)+(s[1]*2)
+        total += s[0]*s[1]*s[2]
+    }
+
+    return total
+}
+
 main :: proc() {     
     testInput :: `1x1x10
 2x3x4`
@@ -53,4 +67,5 @@ main :: proc() {
     dimensions := parse_input(input)   
 
     fmt.println(solve_part_1(dimensions))
+    fmt.println(solve_part_2(dimensions))
 }
