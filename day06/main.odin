@@ -112,11 +112,57 @@ solve_part_1 :: proc(instructions: []Instruction) -> int {
     return count_lights(grid)
 }
 
+get_brightness_grid :: proc() -> [][]int {
+    grid := make([][]int, 1000)
 
+    for row, index in grid {
+        data := make([]int, 1000)
+        grid[index] = data
+    }
+
+    return grid
+}
+
+count_brightness :: proc(grid: [][]int) -> int {
+    sum := 0
+
+    for row in grid {
+        for light in row {
+            sum += light
+        }
+    }
+
+    return sum
+}
+
+solve_part_2 :: proc(instructions: []Instruction) -> int {
+    lights := 0
+    grid := get_brightness_grid()   
+
+    for instruction in instructions {
+        for x in instruction.start.x..=instruction.end.x {
+            for y in instruction.start.y..=instruction.end.y {
+                switch instruction.command {
+                    case Command.TurnOn:
+                        grid[x][y] += 1
+                    case Command.TurnOff:
+                        if grid[x][y] > 0 {
+                            grid[x][y] -= 1
+                        }
+                    case Command.Toggle:
+                        grid[x][y] += 2
+                }
+            }
+        }   
+    }
+
+    return count_brightness(grid)
+}
 
 main :: proc() {         
     raw_input, ok := os.read_entire_file("input.txt");
     input := parse_input(string(raw_input))    
 
     fmt.println(solve_part_1(input))
+    fmt.println(solve_part_2(input))
 }
