@@ -3,6 +3,7 @@ package day05
 import "core:fmt"
 import "core:strings"
 import "core:os"
+import "core:unicode/utf8"
 
 
 parse_input :: proc(input: string)  -> []string {
@@ -91,16 +92,49 @@ solve_part_1 :: proc(input: []string) -> int {
         }
     }
 
+    return nice_lines
+}
+
+solve_part_2 :: proc(input: []string) -> int {
+    nice_lines := 0
+    
+    for line in input {
+        before_previous := 'ä'
+        previous := 'ö'
+        had_valid_doubles := false
+        had_valid_between_repeat := false
+
+        for letter, index in line {
+            substr := utf8.runes_to_string([]rune{previous, letter})
+            instances := strings.count(line, substr)
+            
+            if instances > 1 {
+                had_valid_doubles = true
+            }            
+            
+            if before_previous == letter {
+                had_valid_between_repeat = true
+            }
+
+            before_previous = previous
+            previous = letter
+        }
+
+        if had_valid_doubles && had_valid_between_repeat {
+            nice_lines += 1
+        }
+    }
 
     return nice_lines
 }
 
 
 main :: proc() {     
-    testInput :: []string{"ugknbfddgicrmopn", "aaa", "jchzalrnumimnmhp", "haegwjzuvuyypxyu", "dvszwmarrgswjxmb"}
+    testInput :: []string{"qjhvhtzxzqqjkmpb", "xxyxx", "uurcxstgmygtbstg", "ieodomkazucvgmuy"}
     
     raw_input, ok := os.read_entire_file("input.txt");
     input := parse_input(string(raw_input))
 
     fmt.println(solve_part_1(input))
+    fmt.println(solve_part_2(input))
 }
